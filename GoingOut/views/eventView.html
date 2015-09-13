@@ -1,0 +1,186 @@
+<div layout="row">
+    <div flex>
+        <md-content layout="column" style="background-color: transparent; overflow: hidden;">
+            <div ng-controller="EventController">
+                <form>
+                    <md-card class="md-whiteframe-z1">
+                        <div layout="row" ng-if="!isEditMode">
+                            <div layout-fill style="height: 200px;">
+                                <div id="gMap"></div>
+                            </div>
+                        </div>
+                        <md-progress-linear id="eventLoadBar" md-mode="indeterminate"></md-progress-linear>
+                        <md-card-content style="padding-top: 0px;">
+                            <div layout="row">
+                                <div flex>
+                                    <md-list>
+                                        <md-list-item class="md-3-line">
+                                            <md-button class="md-fab md-mini" ng-click="SetEditMode()"
+                                                       ng-if="isUserLoggedIn && isEventOwner && !isEditMode"
+                                                       aria-label="Edit">
+                                                <ng-md-icon icon="edit"></ng-md-icon>
+                                            </md-button>
+                                            <div class="md-list-item-text">
+                                                <h3 ng-if="!isEditMode" class="md-title"
+                                                    style="margin-left: 15px;font-size: 20px; font-weight: 500; letter-spacing: .005em;">
+                                                    {{ eventDetails.name }}
+                                                </h3>
+                                                <md-input-container md-no-float ng-if="isEditMode">
+                                                    <input id="eventTitle" type="text" placeholder="Title"
+                                                           ng-model="eventDetails.name" aria-label="Title" required />
+                                                    <div class="errors" ng-messages="eventForm.eventDetails.$error" ng-if="eventForm.$dirty">
+                                                        <div ng-message="required">Required</div>
+                                                    </div>
+                                                </md-input-container>
+                                            </div>
+                                        </md-list-item>
+                                        <md-list-item class="md-3-line">
+                                            <ng-md-icon class="md-avatar" icon="subject"></ng-md-icon>
+                                            <div class="md-list-item-text">
+                                                <p ng-if="!isEditMode">{{ eventDetails.details }}</p>
+                                                <md-input-container md-no-float ng-if="isEditMode">
+                                                    <textarea id="eventDesc" ng-model="eventDetails.details" columns="1"
+                                                              placeholder="Description" aria-label="Description"></textarea>
+                                                    <div class="errors" ng-messages="eventForm.eventDetails.$error" ng-if="eventForm.$dirty">
+                                                        <div ng-message="required">Required</div>
+                                                    </div>
+                                                </md-input-container>
+                                            </div>
+                                        </md-list-item>
+                                        <md-list-item class="md-3-line">
+                                            <ng-md-icon class="md-avatar" icon="schedule"></ng-md-icon>
+                                            <div class="md-list-item-text">
+                                                <p ng-if="!isEditMode">{{ eventDetails.date | date:'longDate' }}</p>
+                                                <p ng-if="!isEditMode">{{ eventDetails.date | date:'shortTime' }}</p>
+                                                <md-input-container md-no-float ng-if="isEditMode">
+                                                    <input id="eventDate" type="datetime-local"
+                                                           ng-model="eventDetails.date" aria-label="Date" required />
+                                                    <label for="eventDate">Date/Time</label>
+                                                </md-input-container>
+                                            </div>
+                                        </md-list-item>
+                                        <md-list-item class="md-3-line" ng-if="isEditMode">
+                                            <ng-md-icon class="md-avatar" icon="event_busy"></ng-md-icon>
+                                            <div class="md-list-item-text">
+                                                <md-input-container ng-if="isEditMode">
+                                                    <input id="eventVoteDeadline" type="date"
+                                                           ng-model="eventDetails.voteDeadline" aria-label="Deadline" required />
+                                                    <label for="eventDate">Vote Deadline</label>
+                                                </md-input-container>
+                                            </div>
+                                        </md-list-item>
+                                        <md-list-item class="md-3-line">
+                                            <ng-md-icon class="md-avatar" icon="room"></ng-md-icon>
+                                            <div class="md-list-item-text">
+                                                <p ng-if="!isEditMode">{{ eventDetails.location.name }}</p>
+                                                <p ng-if="!isEditMode">{{ eventDetails.location.address }}</p>
+                                                <md-input-container md-no-float ng-if="isEditMode">
+                                                    <input id="eventLocName" type="text" placeholder="Location Name"
+                                                           ng-model="eventDetails.location.name" aria-label="Location Name" required />
+                                                    <div class="errors" ng-if="newEventForm.$dirty"
+                                                         ng-messages="newEventForm.eventDetails.$error">
+                                                        <div ng-message="required">Required</div>
+                                                    </div>
+                                                </md-input-container>
+                                                <md-input-container md-no-float ng-if="isEditMode">
+                                                    <input id="eventLocAddress" type="text" required placeholder="Location Address"
+                                                           ng-model="eventDetails.location.address" aria-label="Location Address" />
+                                                    <div class="errors" ng-if="newEventForm.$dirty"
+                                                         ng-messages="newEventForm.eventDetails.$error">
+                                                        <div ng-message="required">Required</div>
+                                                    </div>
+                                                </md-input-container>
+                                                <div layout="row" ng-if="isEditMode">
+                                                    <div layout-fill style="height: 200px;">
+                                                        <div id="gMapEdit"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </md-list-item>
+                                        <md-list-item ng-if="eventDetails.isPastDeadline">
+                                            <div flex>
+                                                <alert-tag alert="deadlineAlert"></alert-tag>
+                                            </div>
+                                        </md-list-item>
+                                        <md-list-item class="md-3-line" ng-if="!isEditMode && isUserLoggedIn">
+                                            <div class="md-list-item-text">
+                                                <div layout="row" layout-align="center center">
+                                                    <div layout="column" layout-align="center center" ng-repeat="r in eventDetails.vote">
+                                                        <md-button name="vote" class="votebutton" ng-click="SetVote(r.label)"
+                                                                   ng-disabled="eventDetails.isPastDeadline || voteServiceRunning || eventDetails.userVote == r.label">
+                                                            <ng-md-icon class="md-avatar" icon="{{ r.icon }}" size="64"
+                                                                        ng-attr-style="fill: {{ setFillColor(eventDetails.userVote, r.label) }}" >
+                                                            </ng-md-icon>
+                                                            <br />
+                                                            <b>{{ r.count }}</b>
+                                                            <br />
+                                                            <label>{{ r.label }}</label>
+                                                        </md-button>
+                                                    </div>
+                                                    <md-progress-circular id="eventVoteLoading" md-mode="indeterminate" md-diameter="24"
+                                                                            ng-if="voteServiceRunning"></md-progress-circular>
+                                                </div>
+                                            </div>
+                                        </md-list-item>
+                                    </md-list>
+
+                                    <md-chips ng-class="(!isEditMode) ? 'eventTags' : ''" ng-if="isEditMode"
+                                              ng-model="eventDetails.tags" readonly="!isEditMode"
+                                              placeholder="+Tag" secondary-placeholder="Add Tags">
+                                    </md-chips>
+                                </div>
+                            </div>
+                        </md-card-content>
+                        <md-card-footer ng-if="isEditMode">
+                            <div class="md-actions" layout="row" layout-align="end end">
+                                <div flex>
+                                    <alert-tag alert="alert"></alert-tag>
+                                </div>
+                                <md-progress-circular id="eventSaveLoading" md-mode="indeterminate" md-diameter="24"
+                                                      ng-if="serviceRunning"></md-progress-circular>
+                                <md-button class="md-raised " type="submit" name="saveBtn" ng-click="SaveEvent()"
+                                           ng-disabled="serviceRunning">Save</md-button>
+                            </div>
+                        </md-card-footer>
+                    </md-card>
+                </form>
+            </div>
+            <div ng-controller="CommentController">
+                <md-card class="md-whiteframe-z1" ng-if="!isEditMode">
+                    <md-card-content>
+                        <h2 class="md-title">Comments</h2>
+                        <div ng-if="isUserLoggedIn">
+                            <md-input-container>
+                                <textarea id="feedbackDesc" ng-model="newCommDetails.comment"
+                                          aria-label="New Comment" md-maxlength="500"></textarea>
+                                <label for="feedbackDesc">Say something...</label>
+                            </md-input-container>
+                            <div class="md-actions" layout="row" layout-align="end end">
+                                <md-progress-circular id="commentLoading" md-mode="indeterminate" md-diameter="24"
+                                                      ng-if="serviceRunning"></md-progress-circular>
+                                <md-button class="md-raised" type="submit" name="comment" ng-click="submitComment()"
+                                           ng-disabled="serviceRunning">Comment</md-button>
+                            </div>
+                        </div>
+                        <md-content>
+                            <md-progress-linear id="commentLoadBar" md-mode="indeterminate"></md-progress-linear>
+                            <md-list>
+                                <md-list-item class="md-3-line" ng-repeat="comm in comments | orderBy:'-date'">
+                                    <img ng-src="{{ comm.user.photo }}" class="md-avatar" alt="{{ comm.user.photo }}" />
+                                    <div class="md-list-item-text">
+                                        <h3>{{ comm.user.name }}</h3>
+                                        <h4 title="{{ comm.date | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}">
+                                            {{ comm.date | amCalendar }}
+                                        </h4>
+<!--                                        <h4>{{ comm.date | date: 'longDate' }} {{ comm.date | date: 'shortTime' }}</h4>-->
+                                        <p>{{ comm.comment }}</p>
+                                    </div>
+                                </md-list-item>
+                            </md-list>
+                        </md-content>
+                    </md-card-content>
+                </md-card>
+            </div>
+        </md-content>
+    </div>
+</div>

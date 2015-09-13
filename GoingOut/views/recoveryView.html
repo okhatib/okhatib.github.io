@@ -1,0 +1,39 @@
+<div ng-controller="PasswordRecoveryController">
+<!--    <recover-password recover="recover" recover-click="recoverPw()" alert="alert"></recover-password>-->
+    <div layout="row">
+        <div flex>
+            <md-content layout="column" style="background-color: transparent;">
+                <md-card class="md-whiteframe-z1">
+                    <md-card-content>
+<!--                        <div layout="row" layout-align="center"><h2>Password Recovery</h2></div>-->
+                        <form name="recoveryForm" ng-submit="recoverPw()">
+                            <md-input-container>
+                                <input id="recoverEmail" type="email" ng-model="recover.email" aria-label="Email" md-maxlength="250" required />
+                                <label for="recoverEmail">Email</label>
+                            </md-input-container>
+                            <br />
+                            <div flex>
+                                <alert-tag alert="alert"></alert-tag>
+                            </div>
+                            <div flex layout="row" layout-align="center center" ng-switch on="serviceRunning">
+                                <div ng-switch-when="true">
+                                    <md-progress-circular class="md-accent" id="recoverLoading"
+                                                          md-mode="indeterminate" md-diameter="36"></md-progress-circular>
+                                </div>
+                                <div layout="column" layout-fill ng-switch-default>
+                                    <md-button class="md-raised md-accent" type="submit" name="recoverBtn"
+                                               ng-disabled="recoveryForm.$invalid || serviceRunning">Recover Password</md-button>
+                                </div>
+                            </div>
+                        </form>
+                    </md-card-content>
+                    <md-card-footer>
+                        <div layout="row" layout-align="end end">
+                            <md-button class="md-primary" ng-href="#/login">Go Back</md-button>
+                        </div>
+                    </md-card-footer>
+                </md-card>
+            </md-content>
+        </div>
+    </div>
+</div>

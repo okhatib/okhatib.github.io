@@ -1,0 +1,29 @@
+<md-toolbar layout="row">
+    <md-button ng-click="toggleSidenav('left')" hide-gt-md aria-label="Menu">
+        <ng-md-icon icon="menu"></ng-md-icon>
+    </md-button>
+    <h1 class="md-toolbar-tools" layout-align-gt-sm="center">{{ menu.title }}</h1>
+</md-toolbar>
+
+<!--
+<md-toolbar layout="row" ng-controller="HeaderController">
+    <button ng-click="toggleSidenav('left')" hide-gt-sm class="menuBtn">
+        <span class="visually-hidden">Menu</span>
+    </button>
+    <a href="#/" class="brand-logo" layout-align-gt-sm="center">
+        <img alt="Outings" src="./img/logo.svg" id="ourLogo">
+    </a>
+    <div class="md-toolbar-tools" show-gt-sm>
+        <span flex></span>
+        <md-button ng-click="OpenBottomSheet()" aria-label="Share Button">
+            <ng-md-icon icon="share"></ng-md-icon>
+        </md-button>
+        <md-button ng-href="#/new">New Event</md-button>
+        <md-button ng-href="#/events/0">Event 0</md-button>
+        <md-button ng-href="#/test/0">Test 0</md-button>
+        <md-button ng-href="#/feedback">Feedback</md-button>
+        <md-button ng-href="#/login">Login</md-button>
+        <md-button class="md-raised" ng-href="#/register">Register</md-button>
+    </div>
+</md-toolbar>
+-->

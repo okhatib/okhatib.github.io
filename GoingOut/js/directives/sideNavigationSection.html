@@ -1,0 +1,32 @@
+<div flex layout="column" ng-controller="SideNavController">
+    <md-sidenav flex class="md-sidenav-left md-whiteframe-z2" style="width: 256px; min-width: 256px; max-width: 256px;"
+                md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+        <md-toolbar class="md-hue-2"
+                    ng-class="(isUserLoggedIn) ? 'md-medium-tall' : 'md-tall'">
+            <div layout="column" class="md-toolbar-tools-bottom inset">
+                <div layout="row" layout-align="center center">
+                    <img src="./img/logo-no-stroke.png" style="height: 64px;"/>
+                </div>
+                <div layout="row" ng-if="!isUserLoggedIn" style="margin-top: 4px;">
+                    <md-button ng-click="navigateTo('login', 'left', null)">Login</md-button>
+                    <md-button class="md-raised" ng-click="navigateTo('register', 'left', null)" style="color: black;">Register</md-button>
+                </div>
+            </div>
+        </md-toolbar>
+        <md-list>
+            <md-list-item ng-click="navigateTo(item.link, 'left', $event)" ng-repeat="item in menu" ng-if="item.show"
+                          aria-label="{{ item.title }}">
+                <ng-md-icon icon="{{ item.icon }}"></ng-md-icon>
+                <p class="inset"> {{ item.title }} </p>
+            </md-list-item>
+        </md-list>
+        <md-divider></md-divider>
+        <md-list>
+            <md-list-item ng-click="navigateTo(item.link, 'left', $event)" ng-repeat="item in settings" ng-if="item.show"
+                          aria-label="{{ item.title }}">
+                <ng-md-icon icon="{{ item.icon }}"></ng-md-icon>
+                <p class="inset"> {{ item.title }} </p>
+            </md-list-item>
+        </md-list>
+    </md-sidenav>
+</div>
