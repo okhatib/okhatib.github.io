@@ -1,0 +1,116 @@
+<div class="layout layout-row" ng-controller="ProfileController">
+    <div class="flex">
+        <md-content class="layout layout-column" style="background-color: transparent; overflow: hidden;">
+            <md-toolbar class="md-tall md-hue-2">
+                <span class="flex"></span>
+                <div class="layout layout-column layout-align-center-center md-toolbar-tools-bottom inset">
+                    <user-avatar ng-if="isUserLoggedIn"></user-avatar>
+                    <span></span>
+                    <div>{{ user.name }}</div>
+                    <div>{{ user.email }}</div>
+                </div>
+            </md-toolbar>
+            <md-progress-linear id="profileLoadBar" md-mode="indeterminate"></md-progress-linear>
+
+            <div class="userEvents" ng-repeat="multVote in userEvents">
+                <md-card class="md-whiteframe-z1">
+                    <md-card-content class="layout layout-column">
+                        <div class="layout layout-row" style="display: flex; align-items: center;">
+                            <span class="truncate md-headline"> {{ multVote.name }} </span>
+                            <span class="flex"></span>
+                            <md-menu style="padding: 0px;">
+                                <md-button aria-label="Event Options" ng-click="openMenu($mdOpenMenu, $event, $index)"
+                                           style="margin: 0px;padding: 0px; max-width: 48px;">
+                                    <ng-md-icon md-menu-origin icon="more_vert"></ng-md-icon>
+                                </md-button>
+                                <md-menu-content width="4">
+                                    <md-menu-item ng-repeat="itm in optionsMenu">
+                                        <md-button ng-click="menuItemClick($index, itm.label)">
+                                            <ng-md-icon md-menu-align-target icon="{{itm.icon}}"></ng-md-icon>
+                                            <label>{{ itm.label }}</label>
+                                        </md-button>
+                                    </md-menu-item>
+                                </md-menu-content>
+                            </md-menu>
+                        </div>
+                        <md-divider></md-divider>
+                        <div class="layout layout-row" style="display: flex; align-items: center;">
+                            <div class="layout layout-column">
+                                <p class="md-body-2">{{ multVote.location.name }}</p>
+                                <p class="md-caption">{{ multVote.date | date:'longDate' }}  {{ multVote.date | date:'shortTime' }}</p>
+                            </div>
+                            <span class="flex"></span>
+                            <md-button aria-label="Event Options" ng-click="openMenu($mdOpenMenu, $event, $index)"
+                                       style="margin: 0px;padding: 0px; max-width: 48px;">
+                                <ng-md-icon icon="favorite_outline" style="fill: #607D8B;"></ng-md-icon>
+                            </md-button>
+                        </div>
+                        <md-divider style="margin: 0 25%;"></md-divider>
+                        <div class="layout layout-row" style="display: flex; align-items: center;">
+                            <div class="layout layout-column">
+                                <p class="md-body-2">{{ multVote.location.name }}</p>
+                                <p class="md-caption">{{ multVote.date | date:'longDate' }}  {{ multVote.date | date:'shortTime' }}</p>
+                            </div>
+                            <span class="flex"></span>
+                            <md-button aria-label="Event Options" ng-click="openMenu($mdOpenMenu, $event, $index)"
+                                       style="margin: 0px;padding: 0px; max-width: 48px;">
+                                <ng-md-icon icon="favorite" style="fill: #FF5252;"></ng-md-icon>
+                            </md-button>
+                        </div>
+                        <md-divider style="margin: 0 25%;"></md-divider>
+                        <div class="layout layout-row" style="display: flex; align-items: center;">
+                            <div class="layout layout-column">
+                                <p class="md-body-2">{{ multVote.location.name }}</p>
+                                <p class="md-caption">{{ multVote.date | date:'longDate' }}  {{ multVote.date | date:'shortTime' }}</p>
+                            </div>
+                            <span class="flex"></span>
+                            <md-button aria-label="Event Options" ng-click="openMenu($mdOpenMenu, $event, $index)"
+                                       style="margin: 0px;padding: 0px; max-width: 48px;">
+                                <ng-md-icon icon="favorite_outline" style="fill: #607D8B;"></ng-md-icon>
+                            </md-button>
+                        </div>
+                    </md-card-content>
+                </md-card>
+            </div>
+
+            <div class="userEvents" ng-repeat="event in userEvents" on-finish-render>
+                <md-card class="md-whiteframe-z1" ng-click="goToEvent($index)">
+                    <md-card-content class="layout layout-column">
+                        <div class="layout layout-row" style="display: flex; align-items: center;">
+                            <span class="truncate md-headline"> {{ event.name }} </span>
+                            <span class="flex"></span>
+                            <md-menu style="padding: 0px;">
+                                <md-button aria-label="Event Options" ng-click="openMenu($mdOpenMenu, $event, $index)"
+                                           style="margin: 0px;padding: 0px; max-width: 48px;">
+                                    <ng-md-icon md-menu-origin icon="more_vert"></ng-md-icon>
+                                </md-button>
+                                <md-menu-content width="4">
+                                    <md-menu-item ng-repeat="itm in optionsMenu">
+                                        <md-button ng-click="menuItemClick($index, itm.label)">
+                                            <ng-md-icon md-menu-align-target icon="{{itm.icon}}"></ng-md-icon>
+                                            <label>{{ itm.label }}</label>
+                                        </md-button>
+                                    </md-menu-item>
+                                </md-menu-content>
+                            </md-menu>
+                        </div>
+                        <div>
+                            <div class="gMaps" style="height: 135px; margin: 0 -16px;"></div>
+                        </div>
+                        <div class="layout layout-row">
+                            <div class="layout layout-column">
+                                <p class="md-body-2">{{ event.location.name }}</p>
+                                <p class="md-caption">{{ event.date | date:'longDate' }}  {{ event.date | date:'shortTime' }}</p>
+                            </div>
+                            <span flex></span>
+                            <div class="layout layout-column layout-align-center-end">
+                                <p class="md-caption">+2 more options</p>
+                                <span>5 <ng-md-icon icon="comment" style="fill: #607D8B;"></ng-md-icon></span>
+                            </div>
+                        </div>
+                    </md-card-content>
+                </md-card>
+            </div>
+        </md-content>
+    </div>
+</div>

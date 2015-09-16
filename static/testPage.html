@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html ng-app="app">
+    <head>
+        <link type="text/css" rel="stylesheet" href="./css/angular-material.min.css">
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons"	rel="stylesheet">
+        <link rel="stylesheet" href="css/font-awesome.css" type="text/css">
+        <link rel="stylesheet" type="text/css" href="./css/style.css">
+
+        <style type="text/css">
+        .box {
+            cursor: pointer;
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+            width: 400px;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .box img {
+            position: absolute;
+            left: 0;
+            -webkit-transition: all 300ms ease-out;
+            -moz-transition: all 300ms ease-out;
+            -o-transition: all 300ms ease-out;
+            -ms-transition: all 300ms ease-out;
+            transition: all 300ms ease-out;
+        }
+
+        .box .overbox {
+            background-color: #304562;
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: #fff;
+            z-index: 100;
+            -webkit-transition: all 300ms ease-out;
+            -moz-transition: all 300ms ease-out;
+            -o-transition: all 300ms ease-out;
+            -ms-transition: all 300ms ease-out;
+            transition: all 300ms ease-out;
+            opacity: 0;
+            width: 360px;
+            height: 200px;
+            padding: 130px 20px;
+        }
+
+        .box:hover .overbox {
+            opacity: 1;
+        }
+
+        .box .overtext {
+            -webkit-transition: all 300ms ease-out;
+            -moz-transition: all 300ms ease-out;
+            -o-transition: all 300ms ease-out;
+            -ms-transition: all 300ms ease-out;
+            transition: all 300ms ease-out;
+            transform: translateY(40px);
+            -webkit-transform: translateY(40px);
+        }
+
+        .box .title {
+            font-size: 2.5em;
+            text-transform: uppercase;
+            opacity: 0;
+            transition-delay: 0.1s;
+            transition-duration: 0.2s;
+        }
+
+        .box:hover .title, .box:focus .title {
+            opacity: 1;
+            transform: translateY(0px);
+            -webkit-transform: translateY(0px);
+        }
+
+        .box .tagline {
+            font-size: 0.8em;
+            opacity: 0;
+            transition-delay: 0.2s;
+            transition-duration: 0.2s;
+        }
+
+        .box:hover .tagline, .box:focus .tagline {
+            opacity: 1;
+            transform: translateX(0px);
+            -webkit-transform: translateX(0px);
+        }
+        </style>
+        <!-- <link rel="stylesheet" type="text/css"  href="css/jssocials.css">
+        <link rel="stylesheet" type="text/css"  href="css/jssocials-theme-flat.css">
+        <link rel="stylesheet" type="text/css"  href="css/font-awesome.css">
+         -->
+    </head>
+    <body layout="column" ng-controller="AppCtrl">
+
+        <md-toolbar layout="row">
+            <button ng-click="toggleSidenav('left')" hide-gt-sm class="menuBtn">
+                <ng-md-icon icon=”menu”></ng-md-icon>
+                <span class="visually-hidden">Menu</span>
+            </button>
+            <h1 class="md-toolbar-tools" layout-align-gt-sm="center">Hello World</h1>
+        </md-toolbar>
+
+        <div layout="row" flex>
+            <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2"
+                        md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
+
+            </md-sidenav>
+            <div layout="column" flex id="content">
+                <md-content layout="column" flex class="md-padding">
+
+                </md-content>
+            </div>
+        </div>
+
+        <social-sharing></social-sharing>
+
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <div class="box">
+                        <img src="http://files.room1design.com/oldcity.jpg" />
+                        <div class="overbox">
+                            <div class="title overtext">
+                                Walk This Way
+                                <div class="preloader-wrapper small active">
+                                    <div class="spinner-layer spinner-green-only">
+                                        <div class="circle-clipper left">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <div class="gap-patch">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <div class="circle-clipper right">
+                                            <div class="circle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tagline overtext">Follow the path of stone, a
+                                road towards an ancient past</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="./js/base/jquery-1.11.3.min.js"></script>
+        <script src="./js/base/angular.min.js"></script>
+        <script src="./js/base/angular-animate.min.js"></script>
+        <script src="./js/base/angular-aria.min.js"></script>
+        <script src="./js/base/angular-material.min.js"></script>
+        <script src="./js/base/angular-route.min.js"></script>
+        <script src="./js/base/angular-social-links.js"></script>
+        <script src="//cdn.jsdelivr.net/angular-material-icons/0.4.0/angular-material-icons.min.js"></script>
+
+        <script type="text/javascript">
+            var app = angular.module('app', ['ngMaterial', 'socialLinks', 'ngMdIcons']);
+
+            app.config(function($mdThemingProvider) {
+                var customBlueMap = 		$mdThemingProvider.extendPalette('light-blue', {
+                    'contrastDefaultColor': 'light',
+                    'contrastDarkColors': ['50'],
+                    '50': 'ffffff'
+                });
+                $mdThemingProvider.definePalette('customBlue', customBlueMap);
+                $mdThemingProvider.theme('default')
+                    .primaryPalette('customBlue', {
+                    'default': '500',
+                    'hue-1': '50'
+                })
+                    .accentPalette('pink');
+                $mdThemingProvider.theme('input', 'default')
+                    .primaryPalette('grey')
+            });
+
+            app.controller('AppCtrl', ['$scope', '$mdSidenav', function($scope, $mdSidenav){
+                $scope.toggleSidenav = function(menuId) {
+                    $mdSidenav(menuId).toggle();
+                }
+            }]);
+        </script>
+
+        <script src='./js/Apps/SocialSharingApp.js'></script>
+
+
+    </body>
+</html>
