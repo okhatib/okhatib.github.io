@@ -1,0 +1,83 @@
+<head>
+  <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+    <script src="https://rawgit.com/chenzlabs/three.ar.js/0f645a5/dist/three.ar.min.js"></script>
+    <script src="https://rawgit.com/chenzlabs/aframe-ar/0cf8d5a/dist/aframe-ar.min.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/cfe5f316/dist/aframe-extras.js"></script>
+    <script type="text/javascript">
+      AFRAME.registerComponent('shadow-material', {
+        init() {
+            this.material = new THREE.ShadowMaterial();
+            this.el.getOrCreateObject3D('mesh').material = this.material;
+            this.material.opacity = 0.3;
+        }
+      });
+    </script>
+    <!-- Prevent touch causing flicker on iOS. -->
+    <style> * { -webkit-tap-highlight-color: rgba(0,0,0,0); } </style>
+</head>
+<body>
+  <div style="height: 100px; position: fixed; top: 0; left: 0;background-color: white;z-index: 9999;">
+    <span>Distance: <p id="distance" style="color: black;"></p></span>
+  </div>
+  
+  <a-scene ar>
+    <a-camera ar-raycaster raycaster cursor="fuse:false"> </a-camera>
+    <a-ring id="cursor" radius-inner="0.02" radius-outer="0.03"  color="teal" position="0 -0.8 -5" rotation="-90 0 0"></a-ring>
+	
+    <a-ring id="pointA" color="red" radius-inner="0.02" radius-outer="0.03" position="0 0 -0.75" rotation="-90 0 0"></a-ring>
+    <a-plane id="plane" width="0.5" height="0.5" position="0 0 0" rotation="-90 0 0" 
+                color="white" shadow="receive: true" shadow-material></a-plane>
+  </a-scene>
+  
+  
+<script type="text/javascript">
+  function onSceneLoaded() {
+    const raycaster = document.querySelector('[ar-raycaster]');
+    const cursor = document.querySelector('#cursor');
+    const pointA = document.querySelector('#pointA');
+    const distanceDiv = document.querySelector('#distance');
+
+    let calc = false;
+    let lastEvent = null;
+    
+    raycaster.addEventListener('raycaster-intersection', (event) => {
+      const target = event.detail.intersections[0].point;
+      cursor.setAttribute('position', target);
+      
+      if(calc) {
+        const FirstPosition = pointA.object3D.position; 
+        const dist = FirstPosition.distanceTo(target);
+        distanceDiv.innerHTML = dist.toFixed(3) + " m";
+      }
+    });
+    
+    raycaster.addEventListener('click', () => {
+      const currentEvent = new Date().getTime();
+      if (lastEvent && (currentEvent - lastEvent < 1000)) {
+        return;
+      }
+      lastEvent = currentEvent;
+      
+      const target = raycaster.components.cursor.intersection.point;
+      
+      if(!calc) {
+        pointA.object3D.visible = true;
+        pointA.setAttribute('position', target);
+        
+        const plane = document.querySelector('#plane');
+        plane.object3D.visible = false;
+		
+        calc = true;
+      }
+      else {
+        calc = false
+
+        pointA.object3D.visible = false;
+      }
+    });
+    
+  }
+  const scene = document.querySelector('a-scene');
+  scene.addEventListener('loaded', onSceneLoaded);
+</script>
+</body>
